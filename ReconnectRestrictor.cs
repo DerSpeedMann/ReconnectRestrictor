@@ -29,8 +29,8 @@ namespace SpeedMann.ReconnectBan
         public override TranslationList DefaultTranslations =>
             new TranslationList
             {
-                { "reconnect_warning", "You are not allowed to reconnect rapidly!" },
-                { "reconnect_ban_reason", "You where banned for reconnecting {0} times" },
+                { "reconnect_warning", "Reconnect {0} of {1} in {2} min!" },
+                { "reconnect_ban_reason", "You where banned for reconnecting {0} times in {1}min" },
                 { "ban_reason", "You where banned for rapidly reconnecting!"}
             };
 
@@ -63,8 +63,6 @@ namespace SpeedMann.ReconnectBan
 
         }
         #region EventHooks
-        
-
         private void onPlayerDisconnection(UnturnedPlayer player)
         {
             checkTimestaps(player.CSteamID);
@@ -83,11 +81,11 @@ namespace SpeedMann.ReconnectBan
                 checkTimestaps(player.CSteamID);
                 if (timeStamps.Count >= Conf.WarnAfterReconnects)
                 {
-                    UnturnedChat.Say(player, Util.Translate("reconnect_warning"), Color.red);
+                    UnturnedChat.Say(player, Util.Translate("reconnect_warning", timeStamps.Count, Conf.AllowedReconnects, Conf.TimeTresholdMinutes), Color.red);
                 }
                 if (timeStamps.Count > Conf.AllowedReconnects)
                 {
-                    Provider.ban(player.CSteamID, Util.Translate("ban_reason"), Conf.BanDuration);
+                    Provider.ban(player.CSteamID, Util.Translate("ban_reason", Conf.AllowedReconnects+1, Conf.TimeTresholdMinutes), Conf.BanDuration);
                 }
                 timeStamps.Add(DateTime.Now);
             }
