@@ -8,12 +8,12 @@ namespace SpeedMann.ReconnectBan
 {
     public class ReconnectRestrictorConfiguration : IRocketPluginConfiguration
     {
+        public string Version = "1.0.0.0";
         public int AllowedReconnects = 3;
         public int WarnAfterReconnects = 2;
         public int TimeTresholdMinutes = 5;
         public uint BanDuration = 200;
         public bool IgnoreAdmins = true;
-        public string Version = "1.0.0.0";
 
         public void LoadDefaults()
         {
