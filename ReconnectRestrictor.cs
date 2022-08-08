@@ -86,10 +86,15 @@ namespace SpeedMann.ReconnectBan
                 if (timeStamps.Count > Conf.AllowedReconnects)
                 {
                     Provider.ban(player.CSteamID, Util.Translate("ban_reason", Conf.AllowedReconnects+1, Conf.TimeTresholdMinutes), Conf.BanDuration);
+                    timeStamps.Clear();
                 }
                 timeStamps.Add(DateTime.Now);
             }
-            ReconnectDict.Add(player.CSteamID, new List<DateTime> { DateTime.Now });
+            else
+            {
+                ReconnectDict.Add(player.CSteamID, new List<DateTime> { DateTime.Now });
+            }
+            
         }
 
         #endregion
@@ -99,7 +104,7 @@ namespace SpeedMann.ReconnectBan
         {
             if (!ReconnectDict.TryGetValue(playerId, out List<DateTime> timeStamps)) return;
 
-            while (!timeStamps.IsEmpty() && timeStamps[0].Subtract(DateTime.Now).Minutes < Conf.TimeTresholdMinutes)
+            while (!timeStamps.IsEmpty() && DateTime.Now.Subtract(timeStamps[0]).Minutes > Conf.TimeTresholdMinutes)
             {
                 timeStamps.RemoveAt(0);
             }

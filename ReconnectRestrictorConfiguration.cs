@@ -12,7 +12,7 @@ namespace SpeedMann.ReconnectBan
         public int AllowedReconnects = 3;
         public int WarnAfterReconnects = 2;
         public int TimeTresholdMinutes = 5;
-        public uint BanDuration = 200;
+        public uint BanDuration = 1200;
         public bool IgnoreAdmins = true;
 
         public void LoadDefaults()
