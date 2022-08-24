@@ -85,7 +85,7 @@ namespace SpeedMann.ReconnectBan
                 }
                 if (timeStamps.Count > Conf.AllowedReconnects)
                 {
-                    Provider.ban(player.CSteamID, Util.Translate("ban_reason", Conf.AllowedReconnects+1, Conf.TimeTresholdMinutes), Conf.BanDuration);
+                    ban(player);
                     timeStamps.Clear();
                 }
                 timeStamps.Add(DateTime.Now);
@@ -100,6 +100,25 @@ namespace SpeedMann.ReconnectBan
         #endregion
 
         #region HelperFunctions 
+        private static void ban(UnturnedPlayer player)
+        {
+            if (player == null) return;
+
+            uint ip = 0;
+            IEnumerable<byte[]> hwids = null;
+            SteamPlayer sPlayer = player.SteamPlayer();
+            if (sPlayer == null)
+            {
+                Logger.LogError($"Could not get ip nor hwids of player {player.CSteamID}");
+            }
+            else
+            {
+                hwids = sPlayer.playerID.GetHwids();
+                ip = player.SteamPlayer().getIPv4AddressOrZero();
+            }
+
+            Provider.requestBanPlayer(CSteamID.Nil, player.CSteamID, ip, hwids, Util.Translate("ban_reason", Conf.AllowedReconnects + 1, Conf.TimeTresholdMinutes), Conf.BanDuration);
+        }
         private void checkTimestaps(CSteamID playerId)
         {
             if (!ReconnectDict.TryGetValue(playerId, out List<DateTime> timeStamps)) return;
